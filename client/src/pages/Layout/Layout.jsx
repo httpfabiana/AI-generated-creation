@@ -16,19 +16,20 @@ const Layout = () => {
   return user ? (
     <div className='flex flex-col items-start justify-start h-screen'>
 
-      <nav className='w-full px-8 min-h-14 flex items-center justify-between border-b border-gray-200'>
+      <nav className='w-full px-4 sm:px-8 min-h-14 flex items-center justify-between border-b border-gray-200'>
         <img 
           src={assets.logo} 
           alt='' 
           className='cursor-pointer w-32 sm:w-44'
           onClick={() => navigate('/')}/>
 
-       {sidebar ? <X onClick={()=> setSidebar(false)} className='w-6 h-6 text-gray-600 sm:hidden'/> : 
-         <Menu onClick={()=> setSidebar(true)} className='w-6 h-6 text-gray-600 sm:hidden'/>}
+       {sidebar ? <X onClick={()=> setSidebar(false)} className='w-6 h-6 text-gray-600 sm:hidden cursor-pointer'/> : 
+         <Menu onClick={()=> setSidebar(true)} className='w-6 h-6 text-gray-600 sm:hidden cursor-pointer'/>}
        </nav>
 
-       <div className='flex-1 w-full flex h-[calc(100vh-64px)]'>
+       <div className='flex-1 w-full flex relative overflow-hidden'>
           <Sidebar sidebar={sidebar}  setSidebar={setSidebar}/>
+
         <div className='flex-1 bg-[#F4F7FB]'>
             <Outlet/>
         </div>
