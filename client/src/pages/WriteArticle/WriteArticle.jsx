@@ -1,22 +1,64 @@
 
 import { Edit, Sparkles } from 'lucide-react'
 import React, { useState } from 'react'
+import { useSession } from '@clerk/react';
 
 const WriteArticle = () => {
 
    const articleLength = [
-    {length: 800, text: 'Pequeno (500-800 words)'},
-    {length: 1200, text: 'Medio (800-1200 words)'},
-    {length: 1600, text: 'Longo (1200+ words)'}
-   ]
+    { length: 800, text: 'Pequeno (500-800 words)' },
+    { length: 1200, text: 'Medio (800-1200 words)' },
+    { length: 1600, text: 'Longo (1200+ words)' }
+  ];
 
-   const [selectedLength, setSelectedLength] = useState(articleLength[0])
+  const { session } = useSession(); // 1. Captura a sessão ativa do usuário logado
 
-   const [input, setInput] = useState('');
+  const [selectedLength, setSelectedLength] = useState(articleLength[0]);
+  const [input, setInput] = useState('');
+  const [loading, setLoading] = useState(false);
+  const [articleContent, setArticleContent] = useState('');
 
-   const onSubmitHandler = async(e) => {
-    e.preventDafault();
-   }
+  const onSubmitHandler = async (e) => {
+    e.preventDefault(); // Ajustado de preventDafault para preventDefault
+
+    if (!input.trim()) return alert('Por favor, digite um prompt.');
+    if (!session) return alert('Você precisa estar logado para gerar artigos.');
+
+    try {
+      setLoading(true);
+
+      // 2. LIGAÇÃO COM O CLERK: Gera o token JWT atualizado
+      const token = await session.getToken();
+
+      // 3. FETCH PARA O BACKEND: Conecta na sua rota v2
+      const response = await fetch('http://localhost:3000/api/ai/generate-article', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}` // Middleware 'auth' vai ler esse cara!
+        },
+        body: JSON.stringify({
+          prompt: input,                 // O texto do seu useState
+          length: selectedLength.length  // O tamanho escolhido (800, 1200 ou 1600)
+        })
+      });
+
+      const data = await response.json();
+
+      if (data.success) {
+        setArticleContent(data.content); // Salva o artigo gerado pelo Gemini na tela
+        console.log('Artigo gerado com sucesso:', data.content);
+      } else {
+        alert('Erro do servidor: ' + data.message);
+      }
+
+    } catch (error) {
+      console.error('Erro ao conectar com o backend:', error);
+      alert('Erro de conexão com o servidor.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
   return (
     <div className='h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700'>
