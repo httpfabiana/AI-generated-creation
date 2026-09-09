@@ -12,6 +12,7 @@ import ReviewResume from './pages/ReviewResume/ReviewResume'
 import Community from './pages/Community/Community'
 import { useEffect} from 'react'
 import { useSession } from '@clerk/react'
+import GenerateNews from './pages/GenerateNews/GenerateNews'
 
 
 const App = () => {
@@ -44,6 +45,7 @@ const App = () => {
         <Route index element={<Dashboard/>}/>
         <Route path='write-article' element={<WriteArticle/>}/>
         <Route path='blog-titles' element={<BlogTitle/>}/>
+        <Route path='generate-news' element={<GenerateNews/>}/>
         <Route path='generate-images' element={<GenerateImages/>}/>
         <Route path='remove-background' element={<RemoveBackground/>}/>
         <Route path='remove-object' element={<RemoveObject/>}/>

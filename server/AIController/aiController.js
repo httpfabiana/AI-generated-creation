@@ -9,6 +9,7 @@ const AI = new OpenAI({
   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
 });
 
+//GERA ARTICLE
 export const generateArticle = async (req, res) => {
   try {
     
@@ -150,7 +151,7 @@ export const generateNewsArticle = async(req, res) => {
       return res.status(403).json({ success: false, message: 'Limite expirado, se torne premium.'})
     }
 
-    const newsUrl = `https://newsapi.org{encodeURIComponent(prompt)}&language=pt&sortBy=publishedAt&pageSize=3&apiKey=${process.env.NEWS_API_KEY}`
+    const newsUrl = `https://newsapi.org/v2/everything?q=${encodeURIComponent(prompt)}&language=pt&sortBy=publishedAt&pageSize=3&apiKey=NEWS_API_KEY`
 
     const newsResponse = await fetch(newsUrl);
     const newsData = await newsResponse.json();
@@ -163,24 +164,26 @@ export const generateNewsArticle = async(req, res) => {
       contextoNoticias = "Nenhuma notícia recente encontrada para este assunto específico hoje.";
     }
 
-    const promptConsolidado = `Voce e um jornalista de tecnologia experiente.
-     Escreva um artigo jornalístico profissional, fluido e atualizado sobre o tema:
-     
-     Utilize obrigatoriamnete as seguintes noticias reais recentes encontradas na internet com base 
-     de fatos para o seu texto:  ${contextoNoticias}
+     const promptConsolidado = `Você é um jornalista de tecnologia experiente.
+      Escreva um artigo jornalístico profissional, aprofundado, fluido e detalhado sobre o tema: "${prompt}".
 
-     Regras: 
-     -Crie um titulo chamativo.
-     -Escreva em formato Markdown(use ## para subtítulos).
-     -Mantenha um tom profissional e informativo.
-     `;
+      Utilize obrigatoriamente as seguintes notícias reais recentes encontradas na internet como base factual para o seu texto:
+    
+      ${contextoNoticias}
+
+     Diretrizes de Estrutura e Tamanho:
+     - Crie um título chamativo no início do artigo (usando #).
+     - Escreva um texto completo de pelo menos 300 a 400 palavras.
+     - Organize o artigo com Introdução, pelo menos 3 Seções de Desenvolvimento detalhadas (usando ## para subtítulos) e uma Conclusão.
+     - Expanda os fatos apresentados nas notícias de contexto, analisando o impacto do assunto na indústria de tecnologia.
+     - Escreva estritamente em formato Markdown com tom profissional e informativo.`;
 
      const response = await AI.chat.completions.create({
-      model: 'gemini-3.5-flash',
-      messages: [{ role: 'user', content: promptConsolidado}],
+      model: 'gemini-3.5-flash', // 👈 Modelo correto para a SDK da OpenAI
+      messages: [{ role: 'user', content: promptConsolidado }],
       temperature: 0.7,
-      max_tokens: 1000
-     })
+      max_tokens: 2500 // 👈 Permite respostas mais extensas
+     });
 
      const resultadoTexto = response.choices[0].message.content;
 
