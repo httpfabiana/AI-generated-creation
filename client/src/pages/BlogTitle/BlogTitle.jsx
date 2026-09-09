@@ -10,7 +10,7 @@ const BlogTitle = () => {
   const [selectedCategory, setSelectedCategory] = useState('Em geral');
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-    const [titlesResult, setTitlesResult] = useState(() => {
+  const [titlesResult, setTitlesResult] = useState(() => {
     return localStorage.getItem('meus_titulos_salvos') || '';
   });
 
