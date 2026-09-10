@@ -58,15 +58,15 @@ const GenerateNews = () => {
     }finally {
       setLoading(false)
     }
-  }
+  }//#22c55e
 
    return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
      <form onSubmit={onSubmitHandler} className="w-full max-w-lg p-4 bg-white rounded-lg border border-gray-200">
       <div className="flex items-center gap-3">
-        <Newspaper className="w-6 text-[#22c55e]"/>
+        <Newspaper className="w-6 text-[#f4a460]"/>
         <h1 className="text-xl font-semibold">
-          Pesquise sobre Artigos e Noticias
+          Pesquise sobre  Noticias
         </h1>
       </div>
 
@@ -84,7 +84,7 @@ const GenerateNews = () => {
       />
 
       <button type="submit" disabled={loading} 
-      className="w-full flex justify-center items-center gap-2 from-[#22c55e] bg-[#16a34a] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-medium">
+      className="w-full flex justify-center items-center gap-2 from-[#22c55e] bg-[#d2691e] text-white px-4 py-2 mt-6 text-sm rounded-lg cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed font-medium">
        {loading ? (
         <>
          <Loader2 className="w-5 h-5 animate-ping"/>
@@ -93,7 +93,7 @@ const GenerateNews = () => {
        ) : (
         <>
          <Sparkles className="w-5"/>
-         Buscar Artigo ou Noticias
+         Buscar Noticias
         </>
        )}
       </button>
@@ -101,9 +101,9 @@ const GenerateNews = () => {
 
      <div className="w-full max-w-lg p-4 bg-white rounded-lg flex flex-col border border-gray-200 min-h-96 max-h-[600px] overflow-y-auto">
       <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-3">
-       <FileText className='w-5 h-5 text-[#22c55e]'/>
+       <FileText className='w-5 h-5 text-[#faa460]'/>
        <h1 className="text-xl font-semibold">
-         Artigo ou Noticias Consolidado
+          Noticias Gerada
        </h1>
      </div>  
 
@@ -112,10 +112,10 @@ const GenerateNews = () => {
          {newsContent}   
         </div>
        ) : (
-        <div>
-         <div>
+        <div className="flex-1 flex justify-center items-center">
+         <div className="text-sm flex flex-col items-center gap-5 text-gray-600">
           <Newspaper className="w-9 h-9 text-gray-300"/>
-          <p>Insira um topico atual e clique em "Buscar Artigo" para cruzar os dados da internet.</p>
+          <p>Insira um topico atual e clique em "Buscar noticias" para cruzar os dados da internet.</p>
         </div>  
         </div>
        )}
