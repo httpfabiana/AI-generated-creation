@@ -1,7 +1,7 @@
+import PDFParser from 'pdf2json'
 import { clerkClient, getAuth } from '@clerk/express';
 import sql from '../configs/db.js';
 import { OpenAI } from 'openai'; 
-
 
 
 const AI = new OpenAI({
@@ -13,10 +13,8 @@ const AI = new OpenAI({
 export const generateArticle = async (req, res) => {
   try {
     
-    // 1. Recupera o estado de autenticação do Clerk
     const { userId } = getAuth(req);
 
-    // Proteção extra: Garante que a requisição possui um usuário logado
     if (!userId) {
       return res.status(401).json({
         success: false,
@@ -26,38 +24,48 @@ export const generateArticle = async (req, res) => {
 
     const { prompt, length } = req.body;
     const plan = req.plan;
-    const free_usage = req.free_usage || 0; // Fallback de segurança caso venha undefined
+    const free_usage = req.free_usage || 0; 
 
-    // 2. Validação do limite de uso gratuito
+
     if (plan !== 'premium' && free_usage >= 10) {
-      return res.status(403).json({ // Usando status 403 para Forbidden/Limite Atingido
+      return res.status(403).json({
         success: false,
         message: 'Limit reached. Upgrade to continue'
       });
     }
 
-    // 3. Chamada da IA (Certifique-se de usar o nome correto do modelo do Gemini)
+      const targetWords = length ? Number(length) : 800;
+
+      const promptConsolidado = `Você é um redator e criador de conteúdo profissional.
+      Escreva um artigo completo, aprofundado e bem estruturado sobre o seguinte tema: "${prompt}".
+
+      Regras Obrigatórias de Escrita:
+     - Crie um título chamativo no início do texto.
+     - O artigo deve ser extenso e detalhado, visando aproximadamente ${targetWords} palavras.
+     - Divida o conteúdo com subtítulos claros em Markdown (use ## para seções).
+     - Inclua: Introdução envolvente, Desenvolvimento detalhado (com pontos principais e análises) e Conclusão.
+     - Mantenha um tom informativo, fluido e profissional.
+     - NÃO faça resumos curtos. Escreva o artigo completo do início ao fim.`;
+
     const response = await AI.chat.completions.create({
-      model: 'gemini-3.5-flash', // Altere para o modelo correto configurado no seu painel (ex: gemini-1.5-flash ou gemini-2.0-flash)
+      model: 'gemini-3.5-flash', 
       messages: [
         {
           role: 'user',
-          content: prompt
+          content: promptConsolidado
         }
       ],
       temperature: 0.7,
-      max_tokens: length ? Number(length) : undefined // Garante que é um número
+      max_tokens: 2000
     });
 
     const content = response.choices[0].message.content;
 
-    // 4. Salva no banco de dados PostgreSQL
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, ${prompt}, ${content}, 'article')
     `;
 
-    // 5. Incrementa o uso no Clerk apenas para usuários do plano free
     if (plan !== 'premium') {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: {
@@ -106,19 +114,17 @@ export const generateBlogTitle = async (req, res) => {
 
     const resultadoTexto = response.choices[0].message.content;
 
-    // Salva no Neon
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, ${prompt}, ${resultadoTexto}, 'blog-title')
     `;
 
-    // Responde o front de imediato para não perder o valor da string
     res.json({ 
       success: true, 
       content: resultadoTexto 
     });
 
-    // Atualiza metadados em segundo plano
+    
     if (plan !== 'premium') {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: { free_usage: free_usage + 1 }
@@ -134,7 +140,6 @@ export const generateBlogTitle = async (req, res) => {
 };
 
 //GERA ARTIGOS
-
 export const generateNewsArticle = async(req, res) => {
   try{
     const {userId} = getAuth(req);
@@ -205,6 +210,90 @@ export const generateNewsArticle = async(req, res) => {
   }catch(error){
     console.log('Erro no gerador de noticias:', error);
     return res.status(500).json({ success: false, message: error.message})
+  }
+}
+
+//REVISA CURRICULO
+export const reviewResume = async(req, res) => {
+ console.log("Arquivo recebido:", {
+  originalname: req.file?.originalname,
+  mimetype: req.file?.mimetype,
+  size: req.file?.size,
+  hasBuffer: !!req.file?.buffer
+});
+
+  try{
+    const { userId } = getAuth(req);
+
+    if(!userId){
+      return res.status(401).json({ success: false, message: 'Usuario não autenticado'})
+    }
+
+     const plan = req.plan || 'free';
+     const free_usage = req.free_usage || 0;
+
+     if(!req.file || !req.file.buffer) {
+      return res.status(400).json({ success: false, message: 'Envie um arquivo PDF valido'})
+     }
+
+      const textoCurriculo = await new Promise((resolver, reject) => {
+       const pdfParser = new PDFParser(null, 1);
+
+       pdfParser.on('pdfParser_dataError', (errData) => reject(errData.parserError));
+       pdfParser.on('pdfParser_dataReady', () => {
+        const rawText = pdfParser.getRawTextContent();
+        resolver(rawText)
+       })
+        pdfParser.parseBuffer(req.file.buffer)
+      })
+
+      const textoLimpo = textoCurriculo ? textoCurriculo.trim() : ""
+
+    if(textoCurriculo.length < 50) {
+      return res.status(400).json({
+       success: false,
+       message: 'Não foi possivel ler o curriculo do PDF. Certifique-se de que o arquivo contém texto e não e uma imagem escanead.'
+      })
+    }
+
+    const promptConsolidado = `Você é um recrutador e especialista em RH de tecnologia experiente.
+      Analise o currículo a seguir e forneça um feedback estruturado em formato Markdown:
+
+      --- CONTEÚDO DO CURRÍCULO ---
+     ${textoLimpo}
+     -----------------------------
+
+     Regras de Resposta:
+     - Destaque os **Pontos Fortes** do candidato.
+     - Aponta **Oportunidades de Melhoria** (layout, clareza, falta de informações chave).
+     - Liste **Palavras-chave e Tecnologias** recomendadas para incluir visando sistemas ATS (filtros automáticos de RH).
+     - Forneça uma **Nota Geral de 0 a 10** justificando resumidamente.`;
+
+     const response = await AI.chat.completions.create({
+      model: 'gemini-3.5-flash',
+      messages: [{ role: "user", content: promptConsolidado }],
+      temperature: 0.7,
+      max_tokens: 2000
+     })
+
+     const resultadoTexto = response.choices[0].message.content;
+
+     await sql `
+      INSERT INTO Creations(user_id, prompt, content, type)
+      VALUES (${userId}, ${req.file.originalname}, ${resultadoTexto}, 'resume-review')
+     `;
+
+     if(plan !== 'premium') {
+      await clerkClient.users.updateUserMetadata(userId, {
+        privateMetadata: {free_usage: free_usage + 1}
+      })
+     }
+
+     return res.json({ success: true, content: resultadoTexto})
+
+  }catch(error) {
+    console.log("Erro na analise de currículo:", error);
+    return res.status(500).json({ success: false, message: "Error interno no servidor ao processa arquivo."})
   }
 }
 
