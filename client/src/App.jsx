@@ -9,6 +9,7 @@ import GenerateNews from './pages/GenerateNews/GenerateNews'
 import ReviewResume from './pages/ReviewResume/ReviewResume'
 import { useEffect} from 'react'
 import { useSession } from '@clerk/react'
+import Notes from './pages/Notes/notes'
 
 
 
@@ -44,6 +45,7 @@ const App = () => {
         <Route path='blog-titles' element={<BlogTitle/>}/>
         <Route path='generate-news' element={<GenerateNews/>}/>
         <Route path='review-resume' element={<ReviewResume/>}/>
+        <Route path='notas'  element={<Notes/>}/>
 
        </Route>
       </Routes>

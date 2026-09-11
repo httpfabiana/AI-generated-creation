@@ -1,15 +1,12 @@
 
 import { useClerk, useUser, useAuth } from '@clerk/react';
 import {
-  Eraser,
   FileText,
   Hash,
   House,
-  Image,
   LogOut,
-  Scissors,
   SquarePen,
-  Users,
+  NotebookPen,
   Newspaper
 } from 'lucide-react';
 import React from 'react';
@@ -21,7 +18,7 @@ const navItems = [
   { to: '/ai/blog-titles', label: 'Gere titulos', Icon: Hash },
   { to:  '/ai/generate-news', label: 'Pesquise Noticias', Icon: Newspaper},
   { to: '/ai/review-resume', label: 'Análise de Currículos', Icon: FileText },
-  { to: '/ai/community', label: 'Community', Icon: Users },
+  { to: '/ai/notas', label: 'Notas', Icon: NotebookPen}
 ];
 
 const Sidebar = ({ sidebar, setSidebar }) => {

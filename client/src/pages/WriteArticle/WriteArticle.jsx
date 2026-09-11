@@ -1,6 +1,6 @@
 import { Edit, Sparkles, Hash, Loader2 } from 'lucide-react';
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '@clerk/react'; // 💡 CORREÇÃO: Usando useAuth do @clerk/react igual aos títulos
+import { useAuth } from '@clerk/react'; 
 
 const WriteArticle = () => {
   const articleLength = [
