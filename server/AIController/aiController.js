@@ -3,7 +3,6 @@ import { clerkClient, getAuth } from '@clerk/express';
 import sql from '../configs/db.js';
 import { OpenAI } from 'openai'; 
 
-
 const AI = new OpenAI({
   apiKey: process.env.GEMINI_API_KEY,
   baseURL: 'https://generativelanguage.googleapis.com/v1beta/openai/'
@@ -294,6 +293,30 @@ export const reviewResume = async(req, res) => {
   }catch(error) {
     console.log("Erro na analise de currículo:", error);
     return res.status(500).json({ success: false, message: "Error interno no servidor ao processa arquivo."})
+  }
+}
+
+//GetDashboardData
+export const getDashboardData = async(req, res) => {
+  try{
+    const { userId } = getAuth(req);
+
+    if(!userId) {
+      return res.status(401).json({ success: false, message: 'Usuario não autenticado'})
+    }
+
+    const creations = await sql`
+     SELECT id, prompt, content, type, created_at
+     FROM Creations
+     WHERE user_id = ${userId}
+     ORDER BY created_at DESC 
+    `
+
+    return res.json({ success: true, creations: creations})
+
+  }catch(error) {
+    console.log('Error ao buscar dados do dashboard', error);
+    return res.status(500).json({ success: false, message: 'Error interno ao buscar dados do dashboard'})
   }
 }
 

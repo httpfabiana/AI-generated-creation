@@ -16,14 +16,11 @@ import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
-  { to: '/ai', label: 'Dashboard', Icon: House },
-  { to: '/ai/write-article', label: 'Write Article', Icon: SquarePen },
-  { to: '/ai/blog-titles', label: 'Blog Titles', Icon: Hash },
-  { to:  '/ai/generate-news', label: 'Generate News', Icon: Newspaper},
-  // { to: '/ai/generate-images', label: 'Generate Images', Icon: Image },
- // { to: '/ai/remove-background', label: 'Remove Background', Icon: Eraser },
- // { to: '/ai/remove-object', label: 'Remove Object', Icon: Scissors },
-  { to: '/ai/review-resume', label: 'Review Resume', Icon: FileText },
+  { to: '/ai', label: 'Painel', Icon: House },
+  { to: '/ai/write-article', label: 'Escreva Artigos', Icon: SquarePen },
+  { to: '/ai/blog-titles', label: 'Gere titulos', Icon: Hash },
+  { to:  '/ai/generate-news', label: 'Pesquise Noticias', Icon: Newspaper},
+  { to: '/ai/review-resume', label: 'Analise Currículo', Icon: FileText },
   { to: '/ai/community', label: 'Community', Icon: Users },
 ];
 

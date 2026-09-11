@@ -5,14 +5,12 @@ import Layout from './pages/Layout/Layout'
 import Dashboard from './pages/Dashboard/Dashboard'
 import WriteArticle from './pages/WriteArticle/WriteArticle'
 import BlogTitle from './pages/BlogTitle/BlogTitle'
-import GenerateImages from './pages/GenerateImages/GenerateImages'
-import RemoveBackground from './pages/RemoveBackground/RemoveBackground'
-import RemoveObject from './pages/RemoveObject/RemoveObject'
+import GenerateNews from './pages/GenerateNews/GenerateNews'
 import ReviewResume from './pages/ReviewResume/ReviewResume'
 import Community from './pages/Community/Community'
 import { useEffect} from 'react'
 import { useSession } from '@clerk/react'
-import GenerateNews from './pages/GenerateNews/GenerateNews'
+
 
 
 const App = () => {
@@ -46,9 +44,6 @@ const App = () => {
         <Route path='write-article' element={<WriteArticle/>}/>
         <Route path='blog-titles' element={<BlogTitle/>}/>
         <Route path='generate-news' element={<GenerateNews/>}/>
-        <Route path='generate-images' element={<GenerateImages/>}/>
-        <Route path='remove-background' element={<RemoveBackground/>}/>
-        <Route path='remove-object' element={<RemoveObject/>}/>
         <Route path='review-resume' element={<ReviewResume/>}/>
         <Route path='community' element={<Community/>}/>
 
