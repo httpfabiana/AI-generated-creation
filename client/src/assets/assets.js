@@ -5,7 +5,7 @@ import star_icon from "./star_icon.svg";
 import star_dull_icon from "./star_dull_icon.svg";
 import profile_img_1 from "./profile_img_1.png";
 import arrow_icon from "./arrow_icon.svg";
-import { SquarePen, Hash, Image, Eraser, Scissors, FileText } from 'lucide-react'
+import { SquarePen, Hash, Image, Eraser, Scissors, FileText, Newspaper } from 'lucide-react'
 import ai_gen_img_1 from "./ai_gen_img_1.png";
 import ai_gen_img_2 from "./ai_gen_img_2.png";
 import ai_gen_img_3 from "./ai_gen_img_3.png";
@@ -36,25 +36,11 @@ export const AiToolsData = [
         path: '/ai/blog-titles'
     },
     {
-        title: 'Gerador de imagens por IA',
-        description: 'Crie imagens impressionates com nossa ferramentas de geração de imagens por AI. experimente esse poder. ',
-        Icon: Image,
+        title: 'Pesquise Noticias',
+        description: 'Pesquise Noticias com nossas ferramentas e fique por dentro de tudo que acontece no mundo. experimente esse poder. ',
+        Icon: Newspaper,
         bg: { from: '#20C363', to: '#11B97E' },
         path: '/ai/generate-images'
-    },
-    {
-        title: 'Remoção de fundo',
-        description: 'Remova fundos de suas imagens sem esforço com nossa ferramenta baseada em IA..',
-        Icon: Eraser,
-        bg: { from: '#F76C1C', to: '#F04A3C' },
-        path: '/ai/remove-background'
-    },
-    {
-        title: 'Remoção de objetos',
-        description: 'Remova objetos indesejados de suas imagens de forma integrada com nossa ferramenta de remoção de objetos por IA..',
-        Icon: Scissors,
-        bg: { from: '#5C6AF1', to: '#427DF5' },
-        path: '/ai/remove-object'
     },
     {
         title: 'Analista de Currículos',

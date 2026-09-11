@@ -22,14 +22,11 @@ const BlogTitle = () => {
 
   const onSubmitHandler = async (e) => {
     e.preventDefault(); 
-
-    if (!input.trim()) return alert('Por favor, insira uma palavra-chave.');
     
     try {
       setLoading(true);
       setTitlesResult('');
 
-      // 1. Testa se o Clerk está gerando o token de fato
       const token = await getToken();
       if (!token) {
         alert('ERRO: O Clerk não gerou nenhum Token. Você está realmente logado no app?');
@@ -37,7 +34,6 @@ const BlogTitle = () => {
         return;
       }
 
-      // 2. Faz o disparo para o servidor
       const response = await fetch('http://localhost:3000/api/ai/generate-blog-title', {
         method: 'POST',
         headers: {
@@ -50,11 +46,9 @@ const BlogTitle = () => {
         })
       });
 
-      // 3. Lê o texto bruto da resposta antes de converter para JSON
       const textoBruto = await response.text();
       alert('RESPOSTA BRUTA DO SERVIDOR: ' + textoBruto);
 
-      // 4. Converte para objeto para atualizar o estado da tela
       const data = JSON.parse(textoBruto);
       if (data.success) {
         setTitlesResult(data.content); 

@@ -45,14 +45,14 @@ const WriteArticle = () => {
         },
         body: JSON.stringify({
           prompt: input,                 
-          length: Number(selectedLength.length) // Garante que é enviado como número limpo
+          length: Number(selectedLength.length)
         })
       });
 
       const data = await response.json();
 
       if (data.success) {
-        setArticleContent(data.content); // Exibe o artigo na tela
+        setArticleContent(data.content);
         console.log('Artigo gerado com sucesso:', data.content);
       } else {
         alert('Erro do servidor: ' + data.message);

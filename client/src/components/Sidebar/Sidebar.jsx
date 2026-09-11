@@ -20,7 +20,7 @@ const navItems = [
   { to: '/ai/write-article', label: 'Escreva Artigos', Icon: SquarePen },
   { to: '/ai/blog-titles', label: 'Gere titulos', Icon: Hash },
   { to:  '/ai/generate-news', label: 'Pesquise Noticias', Icon: Newspaper},
-  { to: '/ai/review-resume', label: 'Analise Currículo', Icon: FileText },
+  { to: '/ai/review-resume', label: 'Análise de Currículos', Icon: FileText },
   { to: '/ai/community', label: 'Community', Icon: Users },
 ];
 
