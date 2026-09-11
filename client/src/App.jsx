@@ -7,7 +7,6 @@ import WriteArticle from './pages/WriteArticle/WriteArticle'
 import BlogTitle from './pages/BlogTitle/BlogTitle'
 import GenerateNews from './pages/GenerateNews/GenerateNews'
 import ReviewResume from './pages/ReviewResume/ReviewResume'
-import Community from './pages/Community/Community'
 import { useEffect} from 'react'
 import { useSession } from '@clerk/react'
 
@@ -45,7 +44,6 @@ const App = () => {
         <Route path='blog-titles' element={<BlogTitle/>}/>
         <Route path='generate-news' element={<GenerateNews/>}/>
         <Route path='review-resume' element={<ReviewResume/>}/>
-        <Route path='community' element={<Community/>}/>
 
        </Route>
       </Routes>

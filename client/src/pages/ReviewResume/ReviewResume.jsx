@@ -1,5 +1,5 @@
 import { FileText, Sparkles, Loader2 } from 'lucide-react';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import {useAuth} from '@clerk/react'
 
 const ReviewResume = () => {
@@ -8,7 +8,15 @@ const ReviewResume = () => {
 
    const [file, setFile] = useState(null);
    const [loading, setLoading] = useState(false)
-   const [result, setResult] = useState('')
+   const [result, setResult] = useState(() => {
+    return localStorage.getItem('meus_curriculos_salvos') || '';
+   })
+
+   useEffect(() => {
+    if(result) {
+      return localStorage.setItem('meus_curriculos_salvos', result)
+    }
+   },[result])
      
    const onSubmitHandler = async(e) => {
      e.preventDefault();
@@ -26,7 +34,7 @@ const ReviewResume = () => {
      try{
        const token = await getToken();
 
-      const response = await fetch('http://localhost:3000/api/ai/review-resume', {
+       const response = await fetch('http://localhost:3000/api/ai/review-resume', {
         method: 'POST',
         headers: {
          Authorization: `Bearer ${token}`
@@ -34,6 +42,11 @@ const ReviewResume = () => {
         body: formData
       })
        const data = await response.json();
+
+       localStorage.removeItem('@app:curriculo_draft');
+       localStorage.removeItem('@app:vaga_draft');
+       setCurriculoTexto('');
+       setVaga('');
 
        if(data.success) {
         setResult(data.content)
