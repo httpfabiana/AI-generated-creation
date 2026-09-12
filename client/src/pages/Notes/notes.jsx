@@ -18,7 +18,7 @@ const Notes = () => {
   const fetchNotes = async() => {
     try{
       setLoading(true)
-      const token = getToken();
+      const token = await getToken();
 
       const response = await fetch('http://localhost:3000/api/notes', {
         headers: {
@@ -67,7 +67,7 @@ const Notes = () => {
      }
 
     }catch(error) {
-      console.log('Erro ao criar nota:', err)
+      console.log('Erro ao criar nota:', error)
     }
   }
 
@@ -162,9 +162,80 @@ const Notes = () => {
         ) : notes.length > 0 ? (
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {notes.map((note) => (
-             <div></div>
+             <div key={note.id} className="p-4 bg-amber-50 border border-amber-200 rounded-xl shadow-xs flex flex-col justify-between h-52 hover:shadow-md transition-shadow relative group">
+              <div>
+               <h3 className="font-bold text-amber-950 text-base border-b border-amber-200/60 pb-2 mb-2 break-words">
+                {note.titles}
+               </h3>
+               <p className="text-xs text-amber-900/80 whitespace-pre-line line-clamp-5 break-words">
+                 {note.content}
+               </p>
+              </div>
+               
+              <div className="flex justify-between items-center pt-2 border-t border-amber-200/60 mt-2 text-xs text-amber-800/60">
+               <span>
+                 {new Date(note.created_at).toLocaleDateString('pt-BR')}
+               </span>
+               <div className="flex gap-1">
+                <button onClick={() => {setEditingNote(note), setEditTitle(note.title), setEditContent(note.content)}}
+                  className="p-1.5 hover:bg-amber-200/60 rounded-md text-amber-800 transition-colors"
+                  title="Editar"
+                >
+                 <Edit3 className="w-4 h-4"/>
+                </button>
+
+                <button onClick={() => handleDeleteNote(note.id)} className="p-1.5 hover:bg-red-100 rounded-md text-red-600 transition-colors" title="Excluir">
+                  <Trash2 className="w-4 h-4"/>
+                </button>
+               </div>
+              </div>
+             </div>
             ))}
           </div>  
+        ) : (
+          <p className="text-sm text-gray-400">Nenhuma anotação criada ainda.</p>
+        )}
+
+        {editingNote && (
+         <div className="fixed inset-0 bg-black/40 flex items-center justify-center p-4 z-50">
+          <div className="bg-white rounded-xl p-6 w-full max-w-lg shadow-xl relative">
+
+           <div className="flex justify-between items-center mb-4 border-b pb-2">
+            <h3 className="font-semibold text-lg">Editar Anotações</h3>
+            <button onClick={() => setEditingNote(null)} className="text-gray-400 hover:text-gray-600">
+              <X className="w-5 h-5"/>
+            </button>
+           </div>
+
+           <form onSubmit={handleUpdateNote} className="space-y-3">
+            <input
+             type="text"
+             value={editTitle}
+             onChange={(e) => setEditTitle(e.target.value)}
+             className='w-full p-2 text-sm border rounded-lg outline-none focus:border-amber-400'
+             required
+            />
+
+            <textarea
+             rows={5}
+             value={editContent}
+             onChange={(e) => setEditContent(e.target.value)}
+             className="w-full p-2 text-sm border rounded-lg outline-none focus:border-amber-400 resize-none"
+             required
+            />
+
+            <div className="flex justify-end gap-2 pt-2">
+              <button type="button" onClick={() => setEditingNote(null)} className="px-4 py-2 text-sm border rounded-lg text-gray-600 hover:bg-gray-50">
+               Cancelar
+             </button>   
+
+             <button type="submit" className="px-4 py-2 text-sm bg-amber-500 hover:bg-amber-600 text-white rounded-lg font-medium">
+               Salvar Alterações
+             </button>
+            </div>
+           </form>
+          </div>
+         </div>  
         )}
      </div>
    )

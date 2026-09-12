@@ -1,4 +1,4 @@
-import getAuth from '@clerk/express';
+import {getAuth} from '@clerk/express';
 import sql from '../configs/db.js'
 
 
@@ -12,10 +12,10 @@ export const getNotes = async(req, res) => {
     }
 
     const notes = await sql`
-     SELECT id, title, content, color, created_at,
-     FROM notes,
-     WHERE user_id = ${userId}
-     ORDER BY created_at DESC
+      SELECT id, title, content, color, created_at
+      FROM notes
+      WHERE user_id = ${userId}
+      ORDER BY created_at DESC
     `;
 
     return res.json({ success: true, notes})
@@ -58,7 +58,7 @@ export const createNote = async(req, res) => {
 //EDITAR NOTAS
 export const updateNote = async(req, res) => {
   try{
-    const {userId} = getAuth();
+    const {userId} = getAuth(req);
 
     if(!userId) {
       return res.status(400).json({ success: false, message: 'Não auteticado'})

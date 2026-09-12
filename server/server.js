@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors';
 import { clerkMiddleware } from '@clerk/express';
 import aiRouter from './routes/aiRoutes.js';
+import noteRouter from './routes/noteRoutes.js'
 
 const app = express();
 
@@ -19,6 +20,8 @@ app.use(clerkMiddleware());
 
 // Suas rotas
 app.use('/api/ai', aiRouter);
+
+app.use('/api/notes', noteRouter)
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
