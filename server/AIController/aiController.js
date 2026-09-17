@@ -102,13 +102,20 @@ export const generateBlogTitle = async (req, res) => {
       return res.status(403).json({ success: false, message: 'Limit reached. Upgrade to continue' });
     }
 
-    const instrucaoIA = `Gere uma lista com os 5 melhores títulos de blog atraentes sobre o assunto: "${prompt}". Retorne apenas a lista de 1 a 5 sem introduções ou textos extras.`;
+    const instrucaoIA = `Crie APENAS 1 título chamativo para um artigo sobre: "${prompt}".
+
+     Regras:
+     - Retorne SOMENTE o título, nada mais.
+     - Não inclua contagem de palavras, aspas ou explicações.
+     - Não use dois-pontos (:).
+     - Máximo de 8 palavras.`
+     ;
 
     const response = await AI.chat.completions.create({
       model: 'gemini-3.5-flash', 
       messages: [{ role: 'user', content: instrucaoIA }],
       temperature: 0.7,
-      max_tokens: 300 
+      max_tokens: 500
     });
 
     const resultadoTexto = response.choices[0].message.content;
@@ -168,7 +175,7 @@ export const generateNewsArticle = async(req, res) => {
       contextoNoticias = "Nenhuma notícia recente encontrada para este assunto específico hoje.";
     }
 
-     const promptConsolidado = `Você é um jornalista de tecnologia experiente.
+     const promptConsolidado = `Você é um jornalista experiente.
       Escreva um artigo jornalístico profissional, aprofundado, fluido e detalhado sobre o tema: "${prompt}".
 
       Utilize obrigatoriamente as seguintes notícias reais recentes encontradas na internet como base factual para o seu texto:
@@ -183,10 +190,10 @@ export const generateNewsArticle = async(req, res) => {
      - Escreva estritamente em formato Markdown com tom profissional e informativo.`;
 
      const response = await AI.chat.completions.create({
-      model: 'gemini-3.5-flash', // 👈 Modelo correto para a SDK da OpenAI
+      model: 'gemini-3.5-flash', 
       messages: [{ role: 'user', content: promptConsolidado }],
       temperature: 0.7,
-      max_tokens: 2500 // 👈 Permite respostas mais extensas
+      max_tokens: 2500 // 
      });
 
      const resultadoTexto = response.choices[0].message.content;

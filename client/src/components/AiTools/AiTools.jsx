@@ -14,7 +14,7 @@ const AiTools = () => {
    <section className='px-4 sm:px-20 xl:px-32 my-24'>
      <div className='text-center'>
        <h2 className='text-slate-700 text-[42px] font-semibold'>
-        ferramentas de IA poderosas
+        Ferramentas de IA Poderosas
        </h2>
        <p className='text-gray-500 max-w-lg mx-auto'>
         Tudo o que você precisa para criar, aprimorar e otimizar seu conteúdo com tecnologia de IA de ponta.

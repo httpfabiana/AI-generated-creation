@@ -20,7 +20,7 @@ const Hero = () => {
 
         <p className="mt-4 max-w-xs sm:max-w-lg 2xl:max-w-xl mx-auto max-sm:text-xs text-gray-600">
           Transforme a criação de conteúdo com nosso conjunto de ferramentas premium de IA.
-          Escreva artigos, gere imagens e otimize seu fluxo de trabalho.
+          Escreva artigos, pesquise noticias e otimize seu fluxo de trabalho.
         </p>
       </div>
 
