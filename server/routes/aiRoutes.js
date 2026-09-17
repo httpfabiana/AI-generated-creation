@@ -3,7 +3,7 @@ import express from 'express'
 import multer from 'multer'
 import path from 'path'
 import { auth } from '../middleware/auth.js';
-import { generateArticle, generateBlogTitle, generateNewsArticle, getDashboardData, reviewResume, } from '../AIController/aiController.js';
+import { deleteCreation, generateArticle, generateBlogTitle, generateNewsArticle, getDashboardData, reviewResume, } from '../AIController/aiController.js';
 
 
 const upload = multer({
@@ -40,5 +40,7 @@ aiRouter.post('/generate-news-article', auth, generateNewsArticle)
 aiRouter.post('/review-resume', upload.single('file'), reviewResume)
 
 aiRouter.get('/dashboard', getDashboardData)
+
+aiRouter.delete('/creation/:id', deleteCreation)
 
 export default aiRouter;
