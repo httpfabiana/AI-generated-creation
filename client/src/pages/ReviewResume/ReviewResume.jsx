@@ -1,6 +1,7 @@
 import { FileText, Sparkles, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {useAuth} from '@clerk/react'
+import ReactMarkdown from 'react-markdown';
 
 const ReviewResume = () => {
 
@@ -29,7 +30,7 @@ const ReviewResume = () => {
      setResult('')
 
      const formData = new FormData();
-     formData.append('resume', file)
+     formData.append('file', file)
 
      try{
        const token = await getToken();
@@ -45,8 +46,7 @@ const ReviewResume = () => {
 
        localStorage.removeItem('@app:curriculo_draft');
        localStorage.removeItem('@app:vaga_draft');
-       setCurriculoTexto('');
-       setVaga('');
+      
 
        if(data.success) {
         setResult(data.content)
@@ -110,7 +110,7 @@ const ReviewResume = () => {
          <div className='flex-1 overflow-y-auto pr-2 break-words text-sm leading-relaxed text-slate-800'>
          {result ? (
           <div className='whitespace-pre-line'>
-            {result}
+            <ReactMarkdown>{result}</ReactMarkdown>
           </div>
          ) : (
            <div className='flex-1 flex justify-center items-center'>

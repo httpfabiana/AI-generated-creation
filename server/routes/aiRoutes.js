@@ -37,7 +37,7 @@ aiRouter.post('/generate-blog-title', auth, generateBlogTitle)
 
 aiRouter.post('/generate-news-article', auth, generateNewsArticle)
 
-aiRouter.post('/review-resume', upload.single('resume'), reviewResume)
+aiRouter.post('/review-resume', upload.single('file'), reviewResume)
 
 aiRouter.get('/dashboard', getDashboardData)
 

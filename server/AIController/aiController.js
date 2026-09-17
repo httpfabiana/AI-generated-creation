@@ -1,4 +1,4 @@
-import PDFParser from 'pdf2json'
+import pdfParse from 'pdf-parse/lib/pdf-parse.js';
 import { clerkClient, getAuth } from '@clerk/express';
 import sql from '../configs/db.js';
 import { OpenAI } from 'openai'; 
@@ -220,88 +220,88 @@ export const generateNewsArticle = async(req, res) => {
 }
 
 //REVISA CURRICULO
-export const reviewResume = async(req, res) => {
- console.log("Arquivo recebido:", {
-  originalname: req.file?.originalname,
-  mimetype: req.file?.mimetype,
-  size: req.file?.size,
-  hasBuffer: !!req.file?.buffer
-});
+export const reviewResume = async (req, res) => {
+  console.log("Arquivo recebido:", req.file?.originalname);
 
-  try{
+  try {
     const { userId } = getAuth(req);
 
-    if(!userId){
-      return res.status(401).json({ success: false, message: 'Usuario não autenticado'})
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Usuário não autenticado' });
     }
 
-     const plan = req.plan || 'free';
-     const free_usage = req.free_usage || 0;
+    const plan = req.plan || 'free';
+    const free_usage = req.free_usage || 0;
 
-     if(!req.file || !req.file.buffer) {
-      return res.status(400).json({ success: false, message: 'Envie um arquivo PDF valido'})
-     }
+    if (!req.file || !req.file.buffer) {
+      return res.status(400).json({ success: false, message: 'Envie um arquivo PDF válido' });
+    }
 
-      const textoCurriculo = await new Promise((resolver, reject) => {
-       const pdfParser = new PDFParser(null, 1);
+    // 1. Corrigir acentuação do nome do arquivo
+    const originalName = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
 
-       pdfParser.on('pdfParser_dataError', (errData) => reject(errData.parserError));
-       pdfParser.on('pdfParser_dataReady', () => {
-        const rawText = pdfParser.getRawTextContent();
-        resolver(rawText)
-       })
-        pdfParser.parseBuffer(req.file.buffer)
-      })
+    const pdfData = await pdfParse(req.file.buffer);
+    const textoLimpo = pdfData.text ? pdfData.text.trim() : "";
 
-      const textoLimpo = textoCurriculo ? textoCurriculo.trim() : ""
-
-    if(textoCurriculo.length < 50) {
+    if (textoLimpo.length < 50) {
       return res.status(400).json({
-       success: false,
-       message: 'Não foi possivel ler o curriculo do PDF. Certifique-se de que o arquivo contém texto e não e uma imagem escanead.'
-      })
+        success: false,
+        message: 'Não foi possível ler o texto do PDF. Certifique-se de que o arquivo contém texto e não é uma imagem escaneada.'
+      });
     }
 
+    // 3. Montagem do prompt para a IA
     const promptConsolidado = `Você é um recrutador e especialista em RH de tecnologia experiente.
-      Analise o currículo a seguir e forneça um feedback estruturado em formato Markdown:
+Analise o currículo a seguir e forneça um feedback estruturado em formato Markdown:
 
-      --- CONTEÚDO DO CURRÍCULO ---
-     ${textoLimpo}
-     -----------------------------
+--- CONTEÚDO DO CURRÍCULO ---
+${textoLimpo.slice(0, 5000)}
+-----------------------------
 
-     Regras de Resposta:
-     - Destaque os **Pontos Fortes** do candidato.
-     - Aponta **Oportunidades de Melhoria** (layout, clareza, falta de informações chave).
-     - Liste **Palavras-chave e Tecnologias** recomendadas para incluir visando sistemas ATS (filtros automáticos de RH).
-     - Forneça uma **Nota Geral de 0 a 10** justificando resumidamente.`;
+Regras de Resposta:
+- Destaque os **Pontos Fortes** do candidato.
+- Aponte **Oportunidades de Melhoria** (layout, clareza, falta de informações chave).
+- Liste **Palavras-chave e Tecnologias** recomendadas para incluir visando sistemas ATS.
+- Forneça uma **Nota Geral de 0 a 10** justificando resumidamente.
 
-     const response = await AI.chat.completions.create({
+REGRAS DE FORMATAÇÃO:
+- NUNCA use código ou formatação LaTeX (como \\rightarrow, \\right, $ ... $).
+- Para indicar correções ou substituições, use apenas a seta simples: "Texto Antigo -> Texto Novo" ou "Texto Antigo → Texto Novo".
+- Mantenha o texto limpo, direto e formatado estritamente em Markdown padrão.`;
+
+    // 4. Chamada da IA com modelo estável
+    const response = await AI.chat.completions.create({
       model: 'gemini-3.5-flash',
       messages: [{ role: "user", content: promptConsolidado }],
       temperature: 0.7,
       max_tokens: 2000
-     })
+    });
 
-     const resultadoTexto = response.choices[0].message.content;
+    const resultadoTexto = response.choices[0].message.content;
 
-     await sql `
-      INSERT INTO Creations(user_id, prompt, content, type)
-      VALUES (${userId}, ${req.file.originalname}, ${resultadoTexto}, 'resume-review')
-     `;
+    // 5. Gravação no banco de dados
+    await sql`
+      INSERT INTO creations (user_id, prompt, content, type)
+      VALUES (${userId}, ${originalName}, ${resultadoTexto}, 'resume-review')
+    `;
 
-     if(plan !== 'premium') {
+    // 6. Atualização de uso no Clerk
+    if (plan !== 'premium') {
       await clerkClient.users.updateUserMetadata(userId, {
-        privateMetadata: {free_usage: free_usage + 1}
-      })
-     }
+        privateMetadata: { free_usage: free_usage + 1 }
+      });
+    }
 
-     return res.json({ success: true, content: resultadoTexto})
+    return res.json({ success: true, content: resultadoTexto });
 
-  }catch(error) {
-    console.log("Erro na analise de currículo:", error);
-    return res.status(500).json({ success: false, message: "Error interno no servidor ao processa arquivo."})
+  } catch (error) {
+    console.error("Erro detalhado na análise de currículo:", error);
+    return res.status(500).json({ 
+      success: false, 
+      message: "Erro interno no servidor ao processar arquivo." 
+    });
   }
-}
+};
 
 //GetDashboardData
 export const getDashboardData = async(req, res) => {
