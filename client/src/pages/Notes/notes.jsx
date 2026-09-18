@@ -167,13 +167,13 @@ const Notes = () => {
                <h3 className="font-bold text-amber-950 text-base border-b border-amber-200/60 pb-2 mb-2 break-words">
                 {note.titles}
                </h3>
-               <p className="text-xs text-amber-900/80 whitespace-pre-line line-clamp-5 break-words">
+               <p className="text-xs font-semibold text-amber-900/80 whitespace-pre-line line-clamp-5 break-words">
                  {note.content}
                </p>
               </div>
                
               <div className="flex justify-between items-center pt-2 border-t border-amber-200/60 mt-2 text-xs text-amber-800/60">
-               <span>
+               <span className="font-semibold">
                  {new Date(note.created_at).toLocaleDateString('pt-BR')}
                </span>
                <div className="flex gap-1">

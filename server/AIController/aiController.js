@@ -328,30 +328,40 @@ export const getDashboardData = async(req, res) => {
 }
 
 
-export const deleteCreation = async(req, res) => {
-  try{
-    const {userId} = getAuth(req);
-    const {id} = req.params;
+export const deleteCreation = async (req, res) => {
+console.log("--> Chegou na rota de exclusão! ID:", req.params.id)
 
-    if(!userId) {
-      return res.status(401).json({ success: false, message: "Não autorizado"})
+  try {
+    const { userId } = getAuth(req);
+    const { id } = req.params;
+
+    if (!userId) {
+      return res.status(401).json({ success: false, message: 'Não autorizado' });
     }
 
-    const result = await sql `
-     DELETE FROM creations
-     WHERE id = ${id} AND user_id ${userId}
-     RETURNING id
+    const numericId = Number(id)
+
+    if(isNaN(numericId)) {
+      return res.status(400).json({ success: false, message:  'ID invalido'})
+    }
+
+    // Tenta deletar
+    const result = await sql`
+      DELETE FROM creations 
+      WHERE id = ${id} AND user_id = ${userId}
+      RETURNING id
     `;
 
     if(result.length === 0) {
-     return res.status(404).json({ success: false, message: 'Item não encontrado ou sem permissão'}) 
+      return res.status(404).json({ success: false, message: 'Item não encontrado ou sem permissão'})
     }
 
-    return res.json({ success: true, message: 'Item deletado com sucesso'})
-  }catch(error) {
-    console.log('Erro ao deleta item:', error)
-    return res.status(500).json({ success: false, message: 'Error ao deletar do servidor'})
+    return res.json({ success: true, message: 'Item excluído com sucesso' });
+
+  } catch (error) {
+    console.error("Erro ao deletar item:", error);
+    return res.status(500).json({ success: false, message: 'Erro ao deletar do servidor' });
   }
-}
+};
 
 

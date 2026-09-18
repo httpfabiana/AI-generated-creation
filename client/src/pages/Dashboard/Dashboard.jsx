@@ -44,6 +44,10 @@ const Dashboard = () => {
     getDashboard()
   },[])
 
+    const handleDeleteCreation = (deleteId) => {
+     setCreations((prevCreations) => prevCreations.filter((item) => item.id !== deleteId))
+    }
+
   return (
     <div className='h-full overflow-y-scroll p-6'>
      <div className='flex justify-start gap-4 flex-wrap'>
@@ -94,7 +98,7 @@ const Dashboard = () => {
         </div>
        ) : creations.length > 0 ? (
           creations.map((item) => (
-            <CreationItem key={item.id} item={item}/>
+            <CreationItem key={item.id} item={item} onDelete={handleDeleteCreation}/>
           ))
        ) : (
          <div className='flex flex-col items-center justify-center p-8 bg-white rounded-xl border border-gray-200 text-center text-gray-400 gap-3'>
