@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { useNavigate } from 'react-router-dom'
 import {assets} from '../../assets/assets'
 
@@ -30,7 +29,7 @@ const Hero = () => {
        </button>
 
         <button className='bg-white px-10 py-3 rounded-lg border border-gray-300 hover:scale-105 active:scale-95 transition'>
-           Assista à demonstração 
+           Assista a demonstração 
         </button>
       </div>
 

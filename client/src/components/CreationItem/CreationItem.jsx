@@ -1,8 +1,10 @@
 
-import React, { useState } from 'react';
+import { useState } from 'react';
 import Markdown from 'react-markdown';
 import { useAuth } from '@clerk/react';
 import { Trash2 } from 'lucide-react';
+import Swal from 'sweetalert2'
+import toast from 'react-hot-toast';
 
 const CreationItem = ({item, onDelete}) => {
 
@@ -13,21 +15,43 @@ const CreationItem = ({item, onDelete}) => {
    const formattedDate = item?.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : ''
 
 
-const handleDelete = async (e, id) => {
-  if (e && e.stopPropagation) {
+  const handleDelete = async (e, id) => {
+   if (e && e.stopPropagation) {
     e.stopPropagation();
-  }
+   }
 
-  console.log("ID que será deletado:", id); // Deve imprimir um número ou UUID real, e não [object Object]
+   console.log("ID que será deletado:", id);
 
-  if (!id || typeof id === 'object') {
+   if (!id || typeof id === 'object') {
     console.error("ERRO: ID inválido recebido:", id);
     return;
   }
 
-  if (!window.confirm('Tem certeza que deseja excluir?')) {
+   const result = await Swal.fire({
+    title: 'Tem certeza?',
+    text: 'Esta ação não poderá ser desfeita.',
+    icon: 'warning',
+    width: '320px',
+    heightAuto: '600px',
+    showCancelButton: true,
+    confirmButtonColor: '#ef4444',
+    cancelButtonColor: '#6b7280',
+    confirmButtonText: 'Sim, excluir',
+    cancelButtonText: 'Cancelar',
+    customClass: {
+      popup: '!py-3 !px-4 !rounded-xl',
+      icon: '!w-10 !h-10 !my-1 scale-75',
+      title: '!text-sm !font-semibold !pt-1',
+      htmlContainer: '!text-xs !mt-1 !mb-2',
+      actions: '!mt-1 !gap-2',
+      confirmButton: '!px-3 !py-1.5 !text-xs',
+      cancelButton: '!px-3 !py-1.5 !text-xs'
+    }
+   })
+
+   if(!result.isConfirmed){
     return;
-  }
+   }
 
   try {
     const token = await getToken();
@@ -42,6 +66,19 @@ const handleDelete = async (e, id) => {
     const data = await response.json();
 
     if (data.success) {
+      toast.success('Excluído com sucesso!', {
+       style: {
+        background: '#10b981',
+        color: '#ffffff',
+        fontWeight: '500',
+        borderRadius: '10px'
+       }, 
+       iconTheme: {
+        primary: '#ffffff',
+        secondary: '#10b981'
+       }
+      })
+
       if (onDelete) {
         onDelete(id);
       }

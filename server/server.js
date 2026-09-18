@@ -7,7 +7,6 @@ import noteRouter from './routes/noteRoutes.js'
 
 const app = express();
 
-// O CORS precisa permitir a origem do seu front-end
 app.use(cors({
   origin: 'http://localhost:5173',
   credentials: true
@@ -15,10 +14,10 @@ app.use(cors({
 
 app.use(express.json());
 
-// Middleware padrão do Clerk v2
+// Middleware padrão.
 app.use(clerkMiddleware());
 
-// Suas rotas
+// Suas rotas.
 app.use('/api/ai', aiRouter);
 
 app.use('/api/notes', noteRouter)

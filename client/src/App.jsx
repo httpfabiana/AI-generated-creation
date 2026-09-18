@@ -1,4 +1,5 @@
-import React from 'react'
+
+import {Toaster} from 'react-hot-toast'
 import { Route, Routes } from 'react-router-dom'
 import Home from './pages/Home/Home'
 import Layout from './pages/Layout/Layout'
@@ -10,7 +11,6 @@ import ReviewResume from './pages/reviewresume/reviewresume'
 import { useEffect} from 'react'
 import { useSession } from '@clerk/react'
 import Notes from './pages/Notes/notes'
-
 
 
 const App = () => {
@@ -36,6 +36,7 @@ const App = () => {
   return (
 
     <div>
+      <Toaster position='top-right' reverseOrder={false}/>
       <Routes>
        <Route path='/' element={<Home/>}/>
       

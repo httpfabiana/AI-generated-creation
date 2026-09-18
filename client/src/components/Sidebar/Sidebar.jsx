@@ -9,14 +9,13 @@ import {
   NotebookPen,
   Newspaper
 } from 'lucide-react';
-import React from 'react';
 import { NavLink } from 'react-router-dom';
 
 const navItems = [
   { to: '/ai', label: 'Painel', Icon: House },
   { to: '/ai/write-article', label: 'Escreva Artigos', Icon: SquarePen },
-  { to: '/ai/blog-titles', label: 'Gere titulos', Icon: Hash },
-  { to:  '/ai/generate-news', label: 'Pesquise Noticias', Icon: Newspaper},
+  { to: '/ai/blog-titles', label: 'Gere títulos', Icon: Hash },
+  { to:  '/ai/generate-news', label: 'Pesquise Notícias', Icon: Newspaper},
   { to: '/ai/review-resume', label: 'Análise de Currículos', Icon: FileText },
   { to: '/ai/notas', label: 'Notas', Icon: NotebookPen}
 ];
@@ -31,10 +30,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
       className={`w-60 shrink-0 bg-white border-r border-gray-200 flex flex-col justify-between items-center
      max-sm:absolute max-sm:z-50 max-sm:top-0 max-sm:left-0 max-sm:h-full
 
-    ${sidebar
-      ? 'max-sm:translate-x-0'
-      : 'max-sm:-translate-x-full'
-    }
+    ${sidebar ? 'max-sm:translate-x-0' : 'max-sm:-translate-x-full'}
 
     transition-transform duration-300 ease-in-out
   `}
@@ -60,11 +56,7 @@ const Sidebar = ({ sidebar, setSidebar }) => {
              >
               {({ isActive }) => (
                 <>
-                  <Icon
-                    className={`w-4 h-4 ${
-                      isActive ? 'text-white' : ''
-                    }`}
-                  />
+                  <Icon className={`w-4 h-4 ${ isActive ? 'text-white' : '' }`}/>
                   {label}
                 </>
               )}
@@ -82,9 +74,9 @@ const Sidebar = ({ sidebar, setSidebar }) => {
          />
          <div>
            <h1 className='text-sm font-medium'>{user.fullName}</h1>
-          <p className="text-xs text-gray-500">
-            {has({ plan: 'premium' }) ? 'Premium' : 'Free'}
-          </p>
+           <p className="text-xs text-gray-500">
+             {has({ plan: 'premium' }) ? 'Premium' : 'Free'}
+           </p>
 
          </div>
         </div> 

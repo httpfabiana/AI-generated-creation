@@ -58,7 +58,7 @@ const GenerateNews = () => {
     }finally {
       setLoading(false)
     }
-  }//#22c55e
+  }
 
    return (
     <div className="h-full overflow-y-scroll p-6 flex items-start flex-wrap gap-4 text-slate-700">
@@ -93,7 +93,7 @@ const GenerateNews = () => {
        ) : (
         <>
          <Sparkles className="w-5"/>
-         Buscar Noticias
+         Buscar Notícias
         </>
        )}
       </button>
@@ -103,7 +103,7 @@ const GenerateNews = () => {
       <div className="flex items-center gap-3 mb-4 border-b border-gray-100 pb-3">
        <FileText className='w-5 h-5 text-[#ff69b4]'/>
        <h1 className="text-xl font-semibold">
-          Noticias Gerada
+          Notícias Gerada
        </h1>
      </div>  
 
@@ -115,7 +115,7 @@ const GenerateNews = () => {
         <div className="flex-1 flex justify-center items-center">
          <div className="text-sm flex flex-col items-center gap-5 text-gray-600">
           <Newspaper className="w-9 h-9 text-gray-300"/>
-          <p>Insira um topico atual e clique em "Buscar noticias" para cruzar os dados da internet.</p>
+          <p>Insira um tópico atual e clique em "Buscar notícias" para cruzar os dados da internet.</p>
         </div>  
         </div>
        )}

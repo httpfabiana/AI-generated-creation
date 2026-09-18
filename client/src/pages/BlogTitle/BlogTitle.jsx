@@ -15,7 +15,7 @@ const BlogTitle = () => {
   });
 
     useEffect(() => {
-    if (titlesResult) {
+     if (titlesResult) {
       localStorage.setItem('meus_titulos_salvos', titlesResult);
     }
   }, [titlesResult]);
@@ -47,7 +47,6 @@ const BlogTitle = () => {
       });
 
       const textoBruto = await response.text();
-      alert('RESPOSTA BRUTA DO SERVIDOR: ' + textoBruto);
 
       const data = JSON.parse(textoBruto);
       if (data.success) {
@@ -75,7 +74,7 @@ const BlogTitle = () => {
         <p className='mt-6 text-sm font-medium'>Palavra-chave</p>
         <input
           type='text'
-          placeholder='o futuro da inteligência artificial é...'
+          placeholder='O futuro da inteligência artificial é...'
           className='w-full p-2 px-3 mt-2 outline-none text-sm rounded-md border border-gray-300'
           required
           value={input}

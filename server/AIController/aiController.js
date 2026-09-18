@@ -35,7 +35,7 @@ export const generateArticle = async (req, res) => {
 
       const targetWords = length ? Number(length) : 800;
 
-      const promptConsolidado = `Você é um redator e criador de conteúdo profissional.
+     const promptConsolidado = `Você é um redator e criador de conteúdo profissional.
       Escreva um artigo completo, aprofundado e bem estruturado sobre o seguinte tema: "${prompt}".
 
       Regras Obrigatórias de Escrita:
@@ -46,7 +46,7 @@ export const generateArticle = async (req, res) => {
      - Mantenha um tom informativo, fluido e profissional.
      - NÃO faça resumos curtos. Escreva o artigo completo do início ao fim.`;
 
-    const response = await AI.chat.completions.create({
+     const response = await AI.chat.completions.create({
       model: 'gemini-3.5-flash', 
       messages: [
         {
@@ -125,10 +125,7 @@ export const generateBlogTitle = async (req, res) => {
       VALUES (${userId}, ${prompt}, ${resultadoTexto}, 'blog-title')
     `;
 
-    res.json({ 
-      success: true, 
-      content: resultadoTexto 
-    });
+    res.json({ success: true, content: resultadoTexto });
 
     
     if (plan !== 'premium') {
@@ -237,7 +234,6 @@ export const reviewResume = async (req, res) => {
       return res.status(400).json({ success: false, message: 'Envie um arquivo PDF válido' });
     }
 
-    // 1. Corrigir acentuação do nome do arquivo
     const originalName = Buffer.from(req.file.originalname, 'latin1').toString('utf8');
 
     const pdfData = await pdfParse(req.file.buffer);
@@ -250,26 +246,25 @@ export const reviewResume = async (req, res) => {
       });
     }
 
-    // 3. Montagem do prompt para a IA
     const promptConsolidado = `Você é um recrutador e especialista em RH de tecnologia experiente.
-Analise o currículo a seguir e forneça um feedback estruturado em formato Markdown:
+     Analise o currículo a seguir e forneça um feedback estruturado em formato Markdown:
 
---- CONTEÚDO DO CURRÍCULO ---
-${textoLimpo.slice(0, 5000)}
+    --- CONTEÚDO DO CURRÍCULO ---
+    ${textoLimpo.slice(0, 5000)}
 -----------------------------
 
-Regras de Resposta:
-- Destaque os **Pontos Fortes** do candidato.
-- Aponte **Oportunidades de Melhoria** (layout, clareza, falta de informações chave).
-- Liste **Palavras-chave e Tecnologias** recomendadas para incluir visando sistemas ATS.
-- Forneça uma **Nota Geral de 0 a 10** justificando resumidamente.
+    Regras de Resposta:
+    - Destaque os **Pontos Fortes** do candidato.
+    - Aponte **Oportunidades de Melhoria** (layout, clareza, falta de informações chave).
+    - Liste **Palavras-chave e Tecnologias** recomendadas para incluir visando sistemas ATS.
+    - Forneça uma **Nota Geral de 0 a 10** justificando resumidamente.
 
-REGRAS DE FORMATAÇÃO:
-- NUNCA use código ou formatação LaTeX (como \\rightarrow, \\right, $ ... $).
-- Para indicar correções ou substituições, use apenas a seta simples: "Texto Antigo -> Texto Novo" ou "Texto Antigo → Texto Novo".
-- Mantenha o texto limpo, direto e formatado estritamente em Markdown padrão.`;
+    REGRAS DE FORMATAÇÃO:
+    - NUNCA use código ou formatação LaTeX (como \\rightarrow, \\right, $ ... $).
+    - Para indicar correções ou substituições, use apenas a seta simples: "Texto Antigo -> Texto Novo" ou "Texto Antigo → Texto Novo".
+    - Mantenha o texto limpo, direto e formatado estritamente em Markdown padrão.`;
 
-    // 4. Chamada da IA com modelo estável
+
     const response = await AI.chat.completions.create({
       model: 'gemini-3.5-flash',
       messages: [{ role: "user", content: promptConsolidado }],
@@ -279,13 +274,13 @@ REGRAS DE FORMATAÇÃO:
 
     const resultadoTexto = response.choices[0].message.content;
 
-    // 5. Gravação no banco de dados
+
     await sql`
       INSERT INTO creations (user_id, prompt, content, type)
       VALUES (${userId}, ${originalName}, ${resultadoTexto}, 'resume-review')
     `;
 
-    // 6. Atualização de uso no Clerk
+
     if (plan !== 'premium') {
       await clerkClient.users.updateUserMetadata(userId, {
         privateMetadata: { free_usage: free_usage + 1 }
@@ -329,7 +324,7 @@ export const getDashboardData = async(req, res) => {
 
 
 export const deleteCreation = async (req, res) => {
-console.log("--> Chegou na rota de exclusão! ID:", req.params.id)
+ console.log("--> Chegou na rota de exclusão! ID:", req.params.id)
 
   try {
     const { userId } = getAuth(req);
@@ -345,7 +340,6 @@ console.log("--> Chegou na rota de exclusão! ID:", req.params.id)
       return res.status(400).json({ success: false, message:  'ID invalido'})
     }
 
-    // Tenta deletar
     const result = await sql`
       DELETE FROM creations 
       WHERE id = ${id} AND user_id = ${userId}

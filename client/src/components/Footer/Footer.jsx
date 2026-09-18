@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { assets } from '../../assets/assets'
 
 const Footer = () => {
@@ -14,7 +13,7 @@ const Footer = () => {
             <p className="mt-6 text-sm">
                Experimente o poder da IA ​​com o QuickAI. <br/>
                Transforme a criação de conteúdo com nosso conjunto de ferramentas premium de IA. 
-               Escreva artigos, gere imagens e otimize seu fluxo de trabalho.
+               Escreva artigos, Pesquise notícias e otimize seu fluxo de trabalho.
             </p>
         </div>
         <div className="flex-1 flex items-start md:justify-end gap-20">
@@ -24,7 +23,7 @@ const Footer = () => {
                     <li><a href="#">Home</a></li>
                     <li><a href="#">Sobre nós</a></li>
                     <li><a href="#">Contatos</a></li>
-                    <li><a href="#">Politica de privacidade</a></li>
+                    <li><a href="#">Política de privacidade</a></li>
                 </ul>
             </div>
             <div>

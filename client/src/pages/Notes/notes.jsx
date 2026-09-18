@@ -1,6 +1,8 @@
 import { useState, useEffect } from "react";
 import {useAuth} from '@clerk/react'
 import {Plus, Trash2, Edit3, Loader2, StickyNote, X} from 'lucide-react';
+import Swal from "sweetalert2";
+import toast from "react-hot-toast";
 
 const Notes = () => {
   const {getToken} = useAuth();
@@ -72,7 +74,32 @@ const Notes = () => {
   }
 
    const handleDeleteNote = async(id) => {
-    if(!confirm('Deseja realmente excluir esta nota?')) return;
+
+     const result = await Swal.fire({
+        title: 'Tem certeza?',
+        text: 'Esta ação não poderá ser desfeita.',
+        icon: 'warning',
+        width: '320px',
+        heightAuto: '600px',
+        showCancelButton: true,
+        confirmButtonColor: '#ef4444',
+        cancelButtonColor: '#6b7280',
+        confirmButtonText: 'Sim, excluir',
+        cancelButtonText: 'Cancelar',
+        customClass: {
+          popup: '!py-3 !px-4 !rounded-xl',
+          icon: '!w-10 !h-10 !my-1 scale-75',
+          title: '!text-sm !font-semibold !pt-1',
+          htmlContainer: '!text-xs !mt-1 !mb-2',
+          actions: '!mt-1 !gap-2',
+          confirmButton: '!px-3 !py-1.5 !text-xs',
+          cancelButton: '!px-3 !py-1.5 !text-xs'
+        }
+       })
+    
+       if(!result.isConfirmed){
+        return;
+       }
 
     try{
      const token = await getToken();
@@ -87,6 +114,18 @@ const Notes = () => {
 
       if(data.success) {
        setNotes(notes.filter((n) => n.id !== id))
+        toast.success('Excluído com sucesso!', {
+          style: {
+          background: '#10b981',
+          color: '#ffffff',
+          fontWeight: '500',
+          borderRadius: '10px'
+         }, 
+          iconTheme: {
+           primary: '#ffffff',
+           secondary: '#10b981'
+          }
+        })
       }
 
     }catch(error) {
@@ -104,7 +143,7 @@ const Notes = () => {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
-          Authorization: `Bearer ${token}`  
+           Authorization: `Bearer ${token}`  
         },
         body: JSON.stringify({ title: editTitle, content: editContent})
        })

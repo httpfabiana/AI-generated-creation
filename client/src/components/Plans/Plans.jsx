@@ -1,5 +1,4 @@
 
-import React from 'react'
 import { PricingTable } from '@clerk/react';
 
 
