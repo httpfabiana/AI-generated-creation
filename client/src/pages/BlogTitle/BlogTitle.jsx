@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import {useAuth} from '@clerk/react'
 import { Sparkles, Hash, Loader2 } from 'lucide-react';
+import { api } from '../../config/api';
 
 const BlogTitle = () => {
   const {userId, getToken} = useAuth()
