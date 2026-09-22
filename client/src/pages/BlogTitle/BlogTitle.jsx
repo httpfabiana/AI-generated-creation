@@ -34,21 +34,17 @@ const BlogTitle = () => {
         return;
       }
 
-      const response = await fetch('http://localhost:3000/api/ai/generate-blog-title', {
-        method: 'POST',
+       const {data} = await api.post('/api/ai/generate-blog-title', {
+        prompt: input,
+        category: selectedCategory
+       },
+       {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`
-        },
-        body: JSON.stringify({
-          prompt: input,
-          category: selectedCategory
-        })
-      });
+          Authorization: `Bearer ${token}`
+        }
+       }
+      )
 
-      const textoBruto = await response.text();
-
-      const data = JSON.parse(textoBruto);
       if (data.success) {
         setTitlesResult(data.content); 
       } else {
@@ -56,8 +52,9 @@ const BlogTitle = () => {
       }
 
     } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Erro inesperado na requisição'
       console.error(error);
-      alert('Erro crítico na requisição: ' + error.message);
+      alert('Erro crítico na requisição: ' + errorMessage);
     } finally {
       setLoading(false);
     }
