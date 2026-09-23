@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { useAuth} from '@clerk/react';
 import {Newspaper, Sparkles, FileText, Loader2} from 'lucide-react';
+import { api } from "../../config/api";
 
 
 const GenerateNews = () => {
@@ -17,7 +18,7 @@ const GenerateNews = () => {
 
   useEffect(() => {
     if(newsContent){
-     localStorage.setItem('minhas_noticias_salavas', newsContent)
+     localStorage.setItem('minhas_noticias_salvas', newsContent)
     }
   },[newsContent])
 
@@ -32,18 +33,17 @@ const GenerateNews = () => {
      
      const token = await getToken();
 
-     const response = await fetch('http://localhost:3000/api/ai/generate-news-article', {
-       method: 'POST',
-       headers: {
-        'Content-type': 'application/json',
-        'Authorization': `Bearer ${token}`
-       },
-       body: JSON.stringify({
-        prompt: input
-       })
-     });
+     const {data} = await api.post('/api/ai/generate-news-article', {
+      prompt: input,
+      newsContent: newsContent
+     },
+     {
+      headers: {
+       Authorization: `Bearer ${token}`
+      }
+     }
+    )
 
-     const data = await response.json();
 
      if(data.success){
       setNewsContent(data.content);
@@ -53,8 +53,9 @@ const GenerateNews = () => {
        alert('Error no servidor:' + data.message)
      }
     }catch(error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Erro inesperado na requisição'
       console.log('Error de conexão:', error)
-      alert('Error de conexão com servidor')  
+      alert('Error de conexão com servidor:' + errorMessage)  
     }finally {
       setLoading(false)
     }

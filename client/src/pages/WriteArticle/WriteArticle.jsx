@@ -1,6 +1,7 @@
 import { Edit, Sparkles, Hash, Loader2 } from 'lucide-react';
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/react'; 
+import { api } from '../../config/api';
 
 const WriteArticle = () => {
   const articleLength = [
@@ -37,19 +38,15 @@ const WriteArticle = () => {
 
       const token = await getToken();
 
-      const response = await fetch('http://localhost:3000/api/ai/generate-article', {
-        method: 'POST',
+      const {data} = await api.post('/api/ai/generate-article', {
+        prompt: input,
+        length: selectedLength.length,
+        articleContent: articleContent
+      }, {
         headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}` 
-        },
-        body: JSON.stringify({
-          prompt: input,                 
-          length: Number(selectedLength.length)
-        })
-      });
-
-      const data = await response.json();
+         Authorization: `Bearer ${token}`
+        }
+      })
 
       if (data.success) {
         setArticleContent(data.content);
@@ -59,8 +56,9 @@ const WriteArticle = () => {
       }
 
     } catch (error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Erro inesperado na requisição'
       console.error('Erro ao conectar com o backend:', error);
-      alert('Erro de conexão com o servidor.');
+      alert('Erro de conexão com o servidor:' + errorMessage);
     } finally {
       setLoading(false);
     }

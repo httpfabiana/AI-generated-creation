@@ -7,20 +7,19 @@ import noteRouter from './routes/noteRoutes.js';
 
 const app = express();
 
-// Atualize esta lista com o seu link exato da Vercel
 const allowedOrigins = [
   'http://localhost:5173',
   'http://localhost:3000',
-  'https://ai-generated-creation.onrender.com' // <-- Substitua pelo seu domínio da Vercel
+  'https://ai-generated-creation.onrender.com' 
 ];
 
 app.use(cors({
   origin: function (origin, callback) {
-    // Permite requisições sem origin (como mobile apps ou curl) ou se estiver na lista permitida
+  
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
-      callback(null, true); // Ou troque por 'callback(null, true)' para liberar qualquer origem se preferir
+      callback(null, true); 
     }
   },
   credentials: true
@@ -28,10 +27,10 @@ app.use(cors({
 
 app.use(express.json());
 
-// Middleware padrão
+
 app.use(clerkMiddleware());
 
-// Rotas
+
 app.use('/api/ai', aiRouter);
 app.use('/api/notes', noteRouter);
 

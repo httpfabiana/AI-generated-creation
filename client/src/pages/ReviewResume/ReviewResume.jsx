@@ -2,6 +2,7 @@ import { FileText, Sparkles, Loader2 } from 'lucide-react';
 import { useEffect, useState } from 'react';
 import {useAuth} from '@clerk/react'
 import ReactMarkdown from 'react-markdown';
+import { api } from '../../config/api';
 
 const ReviewResume = () => {
 
@@ -35,14 +36,13 @@ const ReviewResume = () => {
      try{
        const token = await getToken();
 
-       const response = await fetch('http://localhost:3000/api/ai/review-resume', {
-        method: 'POST',
+       const {data} = await api.post('/api/ai/review-resume', formData, {
         headers: {
-         Authorization: `Bearer ${token}`
-        },
-        body: formData
-      })
-       const data = await response.json();
+          Authorization: `Bearer ${token}`,
+          'Content-Type': 'multipart/form-data'
+        }
+       }
+      )
 
        localStorage.removeItem('@app:curriculo_draft');
        localStorage.removeItem('@app:vaga_draft');
@@ -55,8 +55,9 @@ const ReviewResume = () => {
        }
 
      }catch(error) {
+      const errorMessage = error.response?.data?.message || error.message || 'Erro inesperado na requisição'
       console.log('Erro na requisição:', error)
-      alert('Error ao conectar com o servidor')
+      alert('Error ao conectar com o servidor:' + errorMessage)
      }finally {
       setLoading(false)
      }
