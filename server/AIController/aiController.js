@@ -329,7 +329,7 @@ export const getDashboardData = async(req, res) => {
 
 
 export const deleteCreation = async (req, res) => {
- console.log("--> Chegou na rota de exclusão! ID:", req.params.id)
+  console.log("--> Chegou na rota de exclusão! ID:", req.params.id);
 
   try {
     const { userId } = getAuth(req);
@@ -339,20 +339,20 @@ export const deleteCreation = async (req, res) => {
       return res.status(401).json({ success: false, message: 'Não autorizado' });
     }
 
-    const numericId = Number(id)
+    const numericId = Number(id);
 
-    if(isNaN(numericId)) {
-      return res.status(400).json({ success: false, message:  'ID invalido'})
+    if (isNaN(numericId)) {
+      return res.status(400).json({ success: false, message: 'ID inválido' });
     }
 
-    const result = await sql`
-      DELETE FROM creations 
-      WHERE id = ${id} AND user_id = ${userId}
-      RETURNING id
-    `;
+     const result = await sql`
+     DELETE FROM creations 
+     WHERE id = ${numericId} AND user_id = ${userId}
+     RETURNING id
+     `;
 
-    if(result.length === 0) {
-      return res.status(404).json({ success: false, message: 'Item não encontrado ou sem permissão'})
+    if (result.length === 0) {
+      return res.status(404).json({ success: false, message: 'Item não encontrado ou sem permissão' });
     }
 
     return res.json({ success: true, message: 'Item excluído com sucesso' });

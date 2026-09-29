@@ -15,19 +15,19 @@ const CreationItem = ({item, onDelete}) => {
    const formattedDate = item?.created_at ? new Date(item.created_at).toLocaleDateString('pt-BR') : ''
 
 
-  const handleDelete = async (e, id) => {
-   if (e && e.stopPropagation) {
+    const handleDelete = async (e, id) => {
+  if (e && e.stopPropagation) {
     e.stopPropagation();
-   }
+  }
 
-   console.log("ID que será deletado:", id);
+  console.log("ID que será deletado:", id);
 
-   if (!id || typeof id === 'object') {
+  if (!id || typeof id === 'object') {
     console.error("ERRO: ID inválido recebido:", id);
     return;
   }
 
-   const result = await Swal.fire({
+  const result = await Swal.fire({
     title: 'Tem certeza?',
     text: 'Esta ação não poderá ser desfeita.',
     icon: 'warning',
@@ -47,37 +47,34 @@ const CreationItem = ({item, onDelete}) => {
       confirmButton: '!px-3 !py-1.5 !text-xs',
       cancelButton: '!px-3 !py-1.5 !text-xs'
     }
-   })
+  });
 
-   if(!result.isConfirmed){
+  if (!result.isConfirmed) {
     return;
-   }
+  }
 
   try {
     const token = await getToken();
 
-    const response = await fetch(`http://localhost:3000/api/ai/creation/${id}`, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
-    });
-
-    const data = await response.json();
+   const { data } = await api.delete(`/api/ai/creation/${id}`, {
+    headers: {
+      Authorization: `Bearer ${token}`
+   }
+  });
 
     if (data.success) {
       toast.success('Excluído com sucesso!', {
-       style: {
-        background: '#10b981',
-        color: '#ffffff',
-        fontWeight: '500',
-        borderRadius: '10px'
-       }, 
-       iconTheme: {
-        primary: '#ffffff',
-        secondary: '#10b981'
-       }
-      })
+        style: {
+          background: '#10b981',
+          color: '#ffffff',
+          fontWeight: '500',
+          borderRadius: '10px'
+        }, 
+        iconTheme: {
+          primary: '#ffffff',
+          secondary: '#10b981'
+        }
+      });
 
       if (onDelete) {
         onDelete(id);
@@ -87,6 +84,8 @@ const CreationItem = ({item, onDelete}) => {
     }
   } catch (error) {
     console.error("Erro ao excluir:", error);
+    const errorMessage = error.response?.data?.message || error.message;
+    alert("Erro ao excluir do servidor: " + errorMessage);
   }
 };
 
