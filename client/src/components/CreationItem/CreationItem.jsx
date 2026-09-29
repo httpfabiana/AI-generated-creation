@@ -5,6 +5,7 @@ import { useAuth } from '@clerk/react';
 import { Trash2 } from 'lucide-react';
 import Swal from 'sweetalert2'
 import toast from 'react-hot-toast';
+import { api } from '../../config/api';
 
 const CreationItem = ({item, onDelete}) => {
 
