@@ -142,7 +142,7 @@ export const generateBlogTitle = async (req, res) => {
   }
 };
 
-//GERA ARTIGOS
+//GERA NOTICIAS
 export const generateNewsArticle = async(req, res) => {
   try{
     const {userId} = getAuth(req);
@@ -183,7 +183,8 @@ export const generateNewsArticle = async(req, res) => {
      - Crie um título chamativo no início do artigo (usando #).
      - Escreva um texto completo de pelo menos 300 a 400 palavras.
      - Organize o artigo com Introdução, pelo menos 3 Seções de Desenvolvimento detalhadas (usando ## para subtítulos) e uma Conclusão.
-     - Expanda os fatos apresentados nas notícias de contexto, analisando o impacto do assunto na indústria de tecnologia.
+     - Expanda os fatos apresentados nas notícias de contexto, analisando a importância, os desdobramentos e o impacto geral do assunto no seu respectivo setor.
+     - Mantenha o foco estritamente no nicho ou tema abordado na notícia original, sem introduzir tópicos não relacionados.
      - Escreva estritamente em formato Markdown com tom profissional e informativo.`;
 
      const response = await AI.chat.completions.create({
@@ -303,6 +304,8 @@ export const getDashboardData = async(req, res) => {
   try{
     const { userId } = getAuth(req);
 
+    console.log("--> USER ID DO CLERK NO DASHBOARD:", userId);
+
     if(!userId) {
       return res.status(401).json({ success: false, message: 'Usuario não autenticado'})
     }
@@ -313,6 +316,8 @@ export const getDashboardData = async(req, res) => {
      WHERE user_id = ${userId}
      ORDER BY created_at DESC 
     `
+
+    console.log("--> DADOS RETORNADOS DO BANCO SQL:", creations);
 
     return res.json({ success: true, creations: creations})
 
