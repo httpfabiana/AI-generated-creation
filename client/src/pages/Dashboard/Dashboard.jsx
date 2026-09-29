@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react';
 import { useAuth } from '@clerk/clerk-react';
 import { Sparkles, Gem, Loader2, FileText } from 'lucide-react';
-import { api } from '../services/api'; 
-import CreationItem from './CreationItem'; 
+import { api } from '../../config/api'
+import CreationItem from '../../components/CreationItem'; 
 
 const Dashboard = () => {
   const [creations, setCreations] = useState([]);
